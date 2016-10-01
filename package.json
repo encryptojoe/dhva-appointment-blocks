@@ -1,0 +1,31 @@
+{
+  "name": "dhva_appointment_blocks",
+  "version": "0.0.1",
+  "description": "Appointment system for VA that uses blockchain",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "appointments",
+    "blockchain",
+    "va",
+    "hosptial"
+  ],
+  "author": "Justin, Colin, Greg, Mathew",
+  "license": "ISC",
+  "dependencies": {
+    "react": "^15.3.2",
+    "react-datepicker": "^0.29.0",
+    "react-dom": "^15.3.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.16.0",
+    "babel-preset-react": "^6.16.0",
+    "babel-preset-stage-0": "^6.16.0",
+    "babel-preset-stage-1": "^6.16.0",
+    "babel-preset-stage-2": "^6.16.0",
+    "babel-preset-stage-3": "^6.16.0",
+    "webpack": "^1.13.2"
+  }
+}
