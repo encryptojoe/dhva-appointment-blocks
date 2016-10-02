@@ -1,10 +1,9 @@
 <?php
+// $iniConfig = parse_ini_file('dhva.ini', true);
 $iniConfig = parse_ini_file($_SERVER['DOCUMENT_ROOT'].'/../conf/dhva.ini', true);
-
 function doCurl($url, $data=NULL){
     global $cookie_file;
     global $iniConfig;
-
     $ch=curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_HTTPHEADER, array(
@@ -26,30 +25,23 @@ function doCurl($url, $data=NULL){
     ob_end_clean(); // stop preventing output
     curl_close($ch);
 }
-
-
 function getAllRecords()
 {
     $url = 'https://api.tierion.com/v1/records?datastoreId=1006';
     return doCurl($url);
 }
-
-
 function getRecordsByUUID($id_uuid='86cd2b1ea22f455d834bb94e0b5f7c77', $ispatient=True)
 {
     $recs = getAllRecords();
     $recsjson = json_decode($recs, True);
     $recsjson = $recsjson['records'];
-
     $out_arr = [];
     foreach ($recsjson as $rec) {
         $url = 'https://api.tierion.com/v1/records/' . $rec['id'];
         $recordresponse = doCurl($url);
-
         $res = json_decode($recordresponse, True);
         $res = $res['data'];
     
-
         if (array_key_exists('version', $res) && $res['version'] == '1') {
             echo "<br />";
             if ($ispatient) {
@@ -62,34 +54,46 @@ function getRecordsByUUID($id_uuid='86cd2b1ea22f455d834bb94e0b5f7c77', $ispatien
                 }
             }
         }
-
     }
     return $out_arr;
 }
-
 function getRecordsByApptId($id)
 {
     $recs = getAllRecords();
     $recsjson = json_decode($recs, True);
     $recsjson = $recsjson['records'];
-
     $out_arr = [];
     foreach ($recsjson as $rec) {
         $url = 'https://api.tierion.com/v1/records/' . $rec['id'];
         $recordresponse = doCurl($url);
-
         $res = json_decode($recordresponse, True);
         $res = $res['data'];
     
-
         if (array_key_exists('version', $res) && $res['version'] == '1') {
                 if ($res['appointment'] == $id) {
 			array_push($out_arr, $res);
                 }
         }
-
     }
     return $out_arr;
+}
+
+function writeRecordToChainHack($staff_id, $id, $hash, $date_from)
+{
+    global $iniConfig;
+    $dataArr = [ 
+                'attending'     => $staff_id,
+                'appointment'   => $id,
+                'timestamp'     => $date_from,
+                'rowhash'       => $hash,
+                'version'       => '0.1',
+                'datastoreId'   => $iniConfig['tierion']['datastoreId']
+                ];
+   
+    # For Tierion
+    $url = 'https://api.tierion.com/v1/records';
+    $response = doCurl($url, json_encode($dataArr));
+    return $response;
 }
 
 function writeRecordToChain($attending_id, $appt_no, $tracking_no, $enc_type, $row_hash, $datestr)
@@ -109,20 +113,20 @@ function writeRecordToChain($attending_id, $appt_no, $tracking_no, $enc_type, $r
     # For Tierion
     $url = 'https://api.tierion.com/v1/records';
     $response = doCurl($url, json_encode($dataArr));
-
     return $response;
 }
-
 function writeRowsToChain($userRow, $trackingRow) 
 {
 	return writeRecordToChain($trackingRow['STAFF_ID'], $trackingRow['APPOINTMENT_ID'], $trackingRow['ID'], $trackingRow['EVENT_ID'], $trackingRow['HASH'], $trackingRow['EVENT_TS']);
-
-
 }
-
 function getUserTrackingHash($userRow, $trackingRow) 
 {
 	$toHash = $userRow['ID'] . $trackingRow['ID'] . $trackingRow['APPOINTMENT_ID'] . $trackingRow['STAFF_ID'];
+	return openssl_digest($toHash, 'sha256');
+}
+
+function getHash($toHash) 
+{
 	return openssl_digest($toHash, 'sha256');
 }
 
