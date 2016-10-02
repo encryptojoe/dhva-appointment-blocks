@@ -67,15 +67,39 @@ function getRecordsByUUID($id_uuid='86cd2b1ea22f455d834bb94e0b5f7c77', $ispatien
     return $out_arr;
 }
 
+function getRecordsByApptId($id)
+{
+    $recs = getAllRecords();
+    $recsjson = json_decode($recs, True);
+    $recsjson = $recsjson['records'];
 
-function writeRecordToChain($attending_id, $appt_no, $appt_datetime, $enc_type, $row_hash, $datestr)
+    $out_arr = [];
+    foreach ($recsjson as $rec) {
+        $url = 'https://api.tierion.com/v1/records/' . $rec['id'];
+        $recordresponse = doCurl($url);
+
+        $res = json_decode($recordresponse, True);
+        $res = $res['data'];
+    
+
+        if (array_key_exists('version', $res) && $res['version'] == '1') {
+                if ($res['appointment'] == $id) {
+			array_push($out_arr, $res);
+                }
+        }
+
+    }
+    return $out_arr;
+}
+
+function writeRecordToChain($attending_id, $appt_no, $tracking_no, $enc_type, $row_hash, $datestr)
 {
     global $iniConfig;
     $dataArr = [ 
                 'attending'     => $attending_id,
                 'appointment'   => $appt_no,
+		'tracking'	=> $tracking_no,
                 'type'          => $enc_type,
-                'appt_datetime' => $appt_datetime,
                 'timestamp'     => $datestr,
                 'rowhash'       => $row_hash,
                 'version'       => '1',
@@ -89,12 +113,17 @@ function writeRecordToChain($attending_id, $appt_no, $appt_datetime, $enc_type, 
     return $response;
 }
 
+function writeRowsToChain($userRow, $trackingRow) 
+{
+	return writeRecordToChain($trackingRow['STAFF_ID'], $trackingRow['APPOINTMENT_ID'], $trackingRow['ID'], $trackingRow['EVENT_ID'], $trackingRow['HASH'], $trackingRow['EVENT_TS']);
 
 
-echo "<pre>";
+}
 
-print_r(getAllRecords());
-// print_r(writeRecordToChain('6435', '325426', '20160101-1100', 2, '4gasdgw', '20160101-1222'));
+function getUserTrackingHash($userRow, $trackingRow) 
+{
+	$toHash = $userRow['ID'] . $trackingRow['ID'] . $trackingRow['APPOINTMENT_ID'] . $trackingRow['STAFF_ID'];
+	return openssl_digest($toHash, 'sha256');
+}
 
-echo "</pre>";
 ?>
