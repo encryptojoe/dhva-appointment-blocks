@@ -17,8 +17,7 @@ foreach( $_GET AS $key => $value ){
     if($key != '') $$key = $value;
 }
 
-function get_type ($table, &$db)
-{
+function get_type ($table, &$db){
     $a = [];
     $sql = "SELECT * FROM $table";
     if($all = $db->query($sql)){

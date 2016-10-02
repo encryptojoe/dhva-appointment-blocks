@@ -9,7 +9,7 @@ const App = React.createClass({
         return {
             user:{
                 name:'Dr Doe', 
-                id:13243234
+                id:10
             },
             date:moment(),
             departments:[],
@@ -22,9 +22,9 @@ const App = React.createClass({
             },
             appointment:{
                 department:-1,
-                doctor:-1,
+                doctor:0,
                 date:moment(),
-                time:'00:00:00',
+                time:'00:00',
                 type:'',
                 local:-1
             }
@@ -44,7 +44,7 @@ const App = React.createClass({
         this.setState(docs);
     },
     pull_departments:function(){
-        jQuery.post('api.php', {func:'get_department_type'}, function(data){
+        jQuery.post('api.php', {func:'get_department_type', staff_id:this.state.user.id}, function(data){
             this.setState({departments:data});
         }.bind(this));
     },
@@ -61,6 +61,17 @@ const App = React.createClass({
         oldState.appointment.date = e;
         this.setState(oldState);
     },
+    updateTime:function(e){
+        let oldState = this.state;
+        oldState.appointment.time = e.target.value;
+        this.setState(oldState);        
+    },
+    saveAppointment:function(){
+        console.log("I'll go save the appointment now");
+        jQuery.post('api.php',{},function(data){
+
+        });
+    },
     componentWillMount:function(){
         this.pull_departments();
     },
@@ -72,7 +83,8 @@ const App = React.createClass({
                 updateState:this.updateState,
                 update_patient_department:this.update_patient_department,
                 updatePatientDoc:this.updatePatientDoc,
-                updateApptDate:this.updateApptDate
+                updateApptDate:this.updateApptDate,
+                updateTime:this.updateTime
             })
         );
 

@@ -9,7 +9,7 @@ const DoctorDrop = React.createClass({
             <FormGroup controlId="doctor">
                 <ControlLabel>Doctor</ControlLabel>
                 <FormControl componentClass="select" placeholder="select" onChange={this.props.updatePatientDoc}>
-                    <option key="defaultDocOpt" value="select">Select</option>
+                    <option key="defaultDocOpt" value="0">Any</option>
                     {
                         this.props.rootState.doctors.map(function(doc, i){
                             return <option key={doc.ID} value={doc.ID}>{doc.FAMILY}, {doc.NAME} ({doc.STAFF_TYPE})</option>;
