@@ -51,7 +51,7 @@ const App = React.createClass({
     update_patient_department:function(e){
         let oldState = this.state;
         oldState.appointment.department = Number(e.target.value);
-        jQuery.post('api.php',{func:'get_department_staff', department_id:Number(e.target.value)}, function(data){
+        jQuery.post('api.php',{func:'get_staff', department_id:Number(e.target.value)}, function(data){
             oldState.doctors = data;
             this.setState(oldState);
         }.bind(this));
