@@ -1,5 +1,6 @@
 import { range, takeWhile, last } from 'lodash';
 import moment from 'moment';
+/* taken from https://github.com/Hanse/react-calendar. He deserves the credit*/ 
 
 export default function createDateObjects(date, weekOffset = 0) {
   const startOfMonth = date.startOf('month');
