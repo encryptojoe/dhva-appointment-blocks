@@ -176,11 +176,12 @@ function get_appointment ($id = '', $patient_id = '', $department_id = '', &$db)
 }
 
 //hacked functions
-function insert_appointment($department_id='',$staff_id='',$date='',$time='',$patient_id='',$staff_id='',&$db)
+function insert_appointment($department_id='', $date='',$time='',$patient_id='',$staff_id='',&$db)
 {
-    $date_from = "$date $time";
+    $date_from = $date . ' ' . $time . ':00';
     
-    $sql = "INSERT INTO APPOINTMENT (DEPARTMENT_ID,STAFF_ID,DATE_FROM,PATIENT_ID,STAFF_ID) VALUES($department_id,$staff_id,$date_from,$patient_id,$staff_id);";
+    $sql = "INSERT INTO APPOINTMENT (DEPARTMENT_ID,STAFF_ID,DATE_FROM,PATIENT_ID) VALUES($department_id,$staff_id,'{$date_from}',$patient_id);";
+
     $db->query($sql);
     $id = $db->insert_id;
     
@@ -223,7 +224,7 @@ switch($func){
         $result = get_apointment($id, $patient_id, $department_id, $db);
         break;
     case 'insert_appointment':
-        $result = insert_appointment($department, $doctor, $date, $time, $staff_id, $db);
+        $result = insert_appointment($department, $date, $time, $patient_id, $staff_id, $db);
         break;
 }
 ### sent the result as json

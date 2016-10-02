@@ -18,7 +18,7 @@ const App = React.createClass({
             patient:{
                 name:'',
                 family:'',
-                pid:-1,
+                pid:Math.round(Math.random()*1000) + 1,
             },
             appointment:{
                 department:-1,
@@ -69,9 +69,18 @@ const App = React.createClass({
     },
     saveAppointment:function(){
         console.log("I'll go save the appointment now");
+        jQuery.post('api.php',{
+            func:'insert_appointment', 
+            department:this.state.appointment.department ,
+            doctor:this.state.appointment.doctor,
+            date:this.state.appointment.date.format('YYYY-MM-DD'),
+            time:this.state.appointment.time,
+            patient_id:this.state.patient.pid,
+            staff_id:this.state.user.id,
+        },function(data){
+            console.log(data);
             hashHistory.push('/appointment-saved');
-        jQuery.post('api.php',{},function(data){
-        });
+        }.bind(this));
     },
     saveWaitList:function(){
         hashHistory.push('/appointment-wait-listed');
