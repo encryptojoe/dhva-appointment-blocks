@@ -4,12 +4,47 @@ import {Panel, Row, Col, Form, FormGroup, FormControl, ControlLabel, ButtonToolb
 import DatePicker from 'react-datepicker';
 import Calendar from './Calendar';
 import DoctorDrop from './DoctorDrop';
+import R from 'ramda';
 
 const CreateAppt = React.createClass({
+    saveReady:function(){
+        let cstate = this.props.rootState;
+        
+        if(cstate.appointment.department > -1 &&
+           cstate.appointment.doctor > -1 &&
+           cstate.appointment.time != '00:00:00'
+        ){return true;} else {return false;}
+    },
+    dayTimePickShow:function(){
+        let cstate = this.props.rootState;
+        if(cstate.appointment.department > -1 && cstate.appointment.doctor > -1){
+            return true;
+        } else {return false;}
+    },
     render:function(){
-        const btns = (false) ? <FormGroup controlId="buttons"><ButtonToolbar> <Button>Cancel</Button> <Button bsStyle="primary">Create</Button> </ButtonToolbar> </FormGroup> : <div></div>;
+        const btns = <FormGroup controlId="buttons">
+            <ButtonToolbar> <Button>Cancel</Button> {(this.saveReady()) ? <Button bsStyle="primary">Create</Button> : <span></span>} </ButtonToolbar> </FormGroup>;
 
-        const datePick = (this.props.rootState.appointment.doctor > -1) ? <DatePicker inline selected={this.props.rootState.appointment.date} minDate={moment()} onChange={this.props.updateApptDate} /> : <div></div>;
+        const dateTimePick = (this.dayTimePickShow()) ? 
+            <FormGroup controlId="date-pick">
+                <Row>
+                    <Col sm={5}>
+                        <ControlLabel>Pick Day</ControlLabel>
+                    </Col>
+                    <Col sm={5}>
+                        <ControlLabel>Pick Time</ControlLabel>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col sm={5}>
+                        <DatePicker inline selected={this.props.rootState.appointment.date} minDate={moment()} onChange={this.props.updateApptDate} />
+                    </Col>
+                    <Col sm={5}>
+                        Times will go here
+                    </Col>
+                </Row>
+            </FormGroup>
+             : <div></div>;
 
         return (
             <Panel bsStyle="primary" header="Create New Appointment">
@@ -31,13 +66,9 @@ const CreateAppt = React.createClass({
 
                         <DoctorDrop {...this.props} />
 
-                        <FormGroup controlId="date-pick">
-                            {datePick}
-                        </FormGroup>
+                        {dateTimePick}
 
-                        <FormGroup controlId="btns">
-                            {btns}
-                        </FormGroup>
+                        {btns}
 
                         <FormGroup controlId="calendar">
                             <Calendar
@@ -49,7 +80,6 @@ const CreateAppt = React.createClass({
                                 {...this.props}
                             />
                         </FormGroup>
-
                     </Form>
                 </Col>
             </Panel>
