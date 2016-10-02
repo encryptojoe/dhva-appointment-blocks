@@ -39,7 +39,13 @@ const CreateAppt = React.createClass({
                         </FormGroup>
 
                         <FormGroup controlId="calendar">
-                            <Calendar {...this.props} />
+                            <Calendar
+                                onNextMonth={() => this.props.updateDate(this.props.rootState.date.clone().add(1, 'months') ) }
+                                onPrevMonth={() => this.props.updateDate(this.props.rootState.date.clone().subtract(1, 'months') ) }
+                                date={this.props.rootState.date}
+                                onPickDate={(date) => console.log(date)}
+                                renderDay={(day) => day.format('D')}
+                            />
                         </FormGroup>
 
                         <FormGroup controlId="buttons">

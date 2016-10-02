@@ -1,46 +1,44 @@
-import React from 'react';
-// import EventCalendar from 'react-event-calendar';
+import React, { Component, PropTypes } from 'react';
 import moment from 'moment';
-// BigCalendar.momentLocalizer(moment);
-import {Table} from 'react-bootstrap';
+import createDateObjects from './createDateObjects';
 
-const Calendar = React.createClass({
-    createMonth:function(){
-        let startOfMonth = moment().startOf('week');
-        let endOfMonth = moment().endOf('month');
+export default class Calendar extends Component {
 
-        let days = [];
-        let day = startOfMonth;
+  static propTypes = {
+    weekOffset: PropTypes.number.isRequired,
+    date: PropTypes.object.isRequired,
+    renderDay: PropTypes.func,
+    onNextMonth: PropTypes.func.isRequired,
+    onPrevMonth: PropTypes.func.isRequired,
+    onPickDate: PropTypes.func
+  }
 
-        while (day <= endOfMonth) {
-            days.push(day.toArray().slice(0,3));
-            day = day.clone().add(1, 'd');
-        }
+  static defaultProps = {
+    weekOffset: 0,
+    renderDay: day => day.format('YYYY-MM-D'),
+  }
 
-        return days;
-    },
-    render:function(){
-        let dates = this.createMonth();
-        return (
-            <div>
-                <Table responsive>
-                    <thead>
-                        <tr>
-                            <td>Sun</td>
-                            <td>Mon</td>
-                            <td>Tues</td>
-                            <td>Wed</td>
-                            <td>Thur</td>
-                            <td>Fri</td>
-                            <td>Sat</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </Table>               
+  render() {
+    const { date, weekOffset, renderDay, onNextMonth, onPrevMonth, onPickDate } = this.props;
+    return (
+      <div className='Calendar'>
+        <div className='Calendar-header'>
+          <button onClick={onPrevMonth}>&laquo;</button>
+          <div className='Calendar-header-currentDate'>{date.format('MMMM YYYY')}</div>
+          <button onClick={onNextMonth}>&raquo;</button>
+        </div>
+        <div className='Calendar-grid'>
+          {createDateObjects(date, weekOffset).map((day, i) =>
+            <div
+              key={`day-${i}`}
+              className={`Calendar-grid-item ${day.classNames || ''}`}
+              onClick={(e) => onPickDate(day.day)}
+            >
+              {renderDay(day.day)}
             </div>
-        );
-    }
-});
-
-export default Calendar;
+          )}
+        </div>
+      </div>
+    );
+  }
+}
