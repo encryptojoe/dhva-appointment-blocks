@@ -25,11 +25,13 @@ function doCurl($url, $data=NULL){
     ob_end_clean(); // stop preventing output
     curl_close($ch);
 }
+
 function getAllRecords()
 {
     $url = 'https://api.tierion.com/v1/records?datastoreId=1006';
     return doCurl($url);
 }
+
 function getRecordsByUUID($id_uuid='86cd2b1ea22f455d834bb94e0b5f7c77', $ispatient=True)
 {
     $recs = getAllRecords();
@@ -57,6 +59,7 @@ function getRecordsByUUID($id_uuid='86cd2b1ea22f455d834bb94e0b5f7c77', $ispatien
     }
     return $out_arr;
 }
+
 function getRecordsByApptId($id)
 {
     $recs = getAllRecords();
@@ -115,10 +118,12 @@ function writeRecordToChain($attending_id, $appt_no, $tracking_no, $enc_type, $r
     $response = doCurl($url, json_encode($dataArr));
     return $response;
 }
+
 function writeRowsToChain($userRow, $trackingRow) 
 {
 	return writeRecordToChain($trackingRow['STAFF_ID'], $trackingRow['APPOINTMENT_ID'], $trackingRow['ID'], $trackingRow['EVENT_ID'], $trackingRow['HASH'], $trackingRow['EVENT_TS']);
 }
+
 function getUserTrackingHash($userRow, $trackingRow) 
 {
 	$toHash = $userRow['ID'] . $trackingRow['ID'] . $trackingRow['APPOINTMENT_ID'] . $trackingRow['STAFF_ID'];
