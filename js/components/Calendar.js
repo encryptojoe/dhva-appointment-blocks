@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import moment from 'moment';
 import createDateObjects from './createDateObjects';
 import R from 'ramda';
+import {ControlLabel} from 'react-bootstrap';
 
 /*base taken from https://github.com/Hanse/react-calendar He deserves the credit. I have modified this file*/
 export default class Calendar extends Component {
@@ -21,12 +22,14 @@ export default class Calendar extends Component {
     }
 
     render() {
+        let rootState = this.props.rootState;
         const { date, weekOffset, renderDay, onNextMonth, onPrevMonth, onPickDate } = this.props;
 
-        if(this.props.rootState === undefined || this.props.rootState.patient.doctor == -1){return (<div></div>); }
+        if(rootState === undefined || rootState.appointment.doctor == -1){return (<div></div>);}
 
         return (
             <div className='Calendar'>
+                <ControlLabel>Availablity</ControlLabel>
                 <div className='Calendar-header'>
                     <button onClick={onPrevMonth}>&laquo;</button>
                     <div className='Calendar-header-currentDate'>{date.format('MMMM YYYY')}</div>
@@ -44,6 +47,6 @@ export default class Calendar extends Component {
                     )}
                 </div>
             </div>
-    );
-  }
+        );
+    }
 }

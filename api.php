@@ -70,7 +70,7 @@ function get_appointments ($date, $db){
 function get_department_staff ($department, $db){
     $a = [];
 
-    $sql = "SELECT S.NAME, S.FAMILY, (SELECT NAME FROM STAFF_TYPE WHERE ID=S.STAFF_TYPE_ID) AS STAFF_TYPE, (SELECT DEPARTMENT FROM DEPARTMENT WHERE ID=S.DEPARTMENT_ID) AS DEPARTMENT FROM STAFF S WHERE S.DEPARTMENT_ID=$department;";
+    $sql = "SELECT S.ID, S.NAME, S.FAMILY, (SELECT NAME FROM STAFF_TYPE WHERE ID=S.STAFF_TYPE_ID) AS STAFF_TYPE, (SELECT DEPARTMENT FROM DEPARTMENT WHERE ID=S.DEPARTMENT_ID) AS DEPARTMENT FROM STAFF S WHERE S.DEPARTMENT_ID=$department;";
     if($all = $db->query($sql)){
         while($row = $all->fetch_assoc()){
           $a[] = $row;
@@ -89,6 +89,9 @@ switch($func){
         break;
     case 'get_appointment_type':
         $result = get_type('APPOINTMENT_TYPE',$db);
+        break;
+    case 'get_appointment_local':
+        $result = get_type('appointment_local', $db);
         break;
     case 'get_department_type':
         $result = get_type('DEPARTMENT',$db);

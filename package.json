@@ -25,6 +25,7 @@
     "ramda": "^0.22.1",
     "react": "^15.3.2",
     "react-bootstrap": "^0.30.3",
+    "react-datepicker": "^0.29.0",
     "react-dom": "^15.3.2",
     "react-event-calendar": "^0.3.0",
     "react-router": "^2.8.1"

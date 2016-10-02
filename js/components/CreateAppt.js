@@ -1,21 +1,15 @@
 import React from 'react';
 import moment from 'moment';
 import {Panel, Row, Col, Form, FormGroup, FormControl, ControlLabel, ButtonToolbar, Button} from 'react-bootstrap';
+import DatePicker from 'react-datepicker';
 import Calendar from './Calendar';
 import DoctorDrop from './DoctorDrop';
-
-// <FormGroup controlId="contactMethod">
-    // <ControlLabel>Method of contact</ControlLabel>
-    // <FormControl componentClass="select" placeholder="select">
-        // <option value="select">Select</option>
-        // <option value="ph-in">Phone Call - In Bound</option>
-        // <option value="ph-out">Phone Call - Out Bound</option>
-    // </FormControl>
-// </FormGroup>
 
 const CreateAppt = React.createClass({
     render:function(){
         const btns = (false) ? <FormGroup controlId="buttons"><ButtonToolbar> <Button>Cancel</Button> <Button bsStyle="primary">Create</Button> </ButtonToolbar> </FormGroup> : <div></div>;
+
+        const datePick = (this.props.rootState.appointment.doctor > -1) ? <DatePicker inline selected={this.props.rootState.appointment.date} minDate={moment()} onChange={this.props.updateApptDate} /> : <div></div>;
 
         return (
             <Panel bsStyle="primary" header="Create New Appointment">
@@ -25,7 +19,7 @@ const CreateAppt = React.createClass({
 
                         <FormGroup controlId="department">
                             <ControlLabel>Department</ControlLabel>
-                            <FormControl componentClass="select" placeholder="select">
+                            <FormControl componentClass="select" placeholder="select" onChange={this.props.update_patient_department}>
                                 <option value="select">Select</option>
                                 {
                                     this.props.rootState.departments.map(function(dept, i){
@@ -37,6 +31,14 @@ const CreateAppt = React.createClass({
 
                         <DoctorDrop {...this.props} />
 
+                        <FormGroup controlId="date-pick">
+                            {datePick}
+                        </FormGroup>
+
+                        <FormGroup controlId="btns">
+                            {btns}
+                        </FormGroup>
+
                         <FormGroup controlId="calendar">
                             <Calendar
                                 onNextMonth={() => this.props.updateDate(this.props.rootState.date.clone().add(1, 'months') ) }
@@ -44,10 +46,10 @@ const CreateAppt = React.createClass({
                                 date={this.props.rootState.date}
                                 onPickDate={(date) => console.log(date)}
                                 renderDay={(day) => day.format('D')}
+                                {...this.props}
                             />
                         </FormGroup>
 
-                        {btns}
                     </Form>
                 </Col>
             </Panel>
