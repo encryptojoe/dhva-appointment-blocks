@@ -1,13 +1,13 @@
 import React from 'react';
 import { Grid, Row, Col, Alert} from 'react-bootstrap';
 
-const ApptSaved = React.createClass({
+const Waitlisted = React.createClass({
     render() {
         return (
             <Grid>
                 <Col sm={12} >
                     <Alert bsStyle="success">
-                        <strong>Appointment Saved!</strong>
+                        <strong>Saved to waitlist!</strong>
                     </Alert>
                 </Col>
             </Grid>
@@ -15,4 +15,4 @@ const ApptSaved = React.createClass({
     }
 });
 
-export default ApptSaved;
+export default Waitlisted;
