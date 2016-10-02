@@ -1,6 +1,7 @@
 <?php
-$result = array();
-$db     = new mysqli('host', 'user', 'pass', 'dbName');
+$result    = array();
+$iniConfig = parse_ini_file($_SERVER['DOCUMENT_ROOT'].'/../conf/dhva.ini', true);
+$db        = new mysqli($iniConfig['db_va']['db_server'], $iniConfig['db_va']['db_username'], $iniConfig['db_va']['db_password'], $iniConfig['db_va']['db_database']);
 
 if($db->connect_errno > 0){
     header('Content-Type: application/json');
@@ -8,12 +9,11 @@ if($db->connect_errno > 0){
     exit;
 }
 
-
 if(isset($_POST['func'])){
     switch($_POST['func']){
         ### what action do we want to perform
-        case 'get_docs':
-        $sql = "SELECT docs FROM `docs` WHERE 1";
+        case 'pull_departments':
+        $sql = "SELECT * FROM `department` WHERE 1";
         if($all = $db->query($sql)){
             while($row = $all->fetch_assoc()){
               ### Add results to array
@@ -21,12 +21,6 @@ if(isset($_POST['func'])){
             }
             $all->free();    
         }
-        break;
-
-        case 'new_appt':
-        $sql = "INSERT INTO `table` (columns) VALUES ('" . $db->escape_string($_POST['vals']) . "');";
-        $result[] = array($db->query($sql), array($db->insert_id, $_POST['vals']));
-
         break;
     }
 

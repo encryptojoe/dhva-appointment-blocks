@@ -23,6 +23,8 @@ export default class Calendar extends Component {
     render() {
         const { date, weekOffset, renderDay, onNextMonth, onPrevMonth, onPickDate } = this.props;
 
+        if(this.props.rootState === undefined || this.props.rootState.patient.doctor == -1){return (<div></div>); }
+
         return (
             <div className='Calendar'>
                 <div className='Calendar-header'>
