@@ -72,21 +72,14 @@ function getBlockchainDetailedInfo($apptInfos) {
 
 $patInfo = getPatient($db, $_GET);
 $apptInfo = getApptInfo($db, $patInfo['ID']);
-echo '<br />';
-echo '<br />';
-var_dump($apptInfo);
 $apptDetailedInfo = getApptDetailedInfo($db, $apptInfo);
-echo '<br />';
-echo '<br />';
-var_dump($apptDetailedInfo);
-
-//$blockchainDetailedInfo = getBlockchainDetailedInfo($apptInfo);
+$blockchainDetailedInfo = getBlockchainDetailedInfo($apptInfo);
 
 
 function writeTableRow($rowName, $mySQLVal, $bcVal) 
 {
 	if ($mySQLVal != $bcVal) {
-		echo '<tr bgcolor="red">';
+		echo '<tr bgcolor="pink">';
 	} else {
 		echo '<tr>';
 	}
@@ -96,12 +89,13 @@ function writeTableRow($rowName, $mySQLVal, $bcVal)
 }
 
 ############### Page ####################
-echo '<h1>Detailed info for ' . $patInfo['NAME'] . ' ' . $patInfo['FAMILY'] . '</h1>';
+echo '<h1>Audit Info for ' . $patInfo['NAME'] . ' ' . $patInfo['FAMILY'] . '</h1>';
 
 
 for ($x = 0; $x < count($apptInfo); $x++) {
-	echo '<table>';
-	echo '<th>Appointment: ' . $apptInfo[$x]['ID'] . '</th>';
+	echo '<h3>Appointment: ' . $apptInfo[$x]['L_TS'] . ' (#' . $apptInfo[$x]['ID'] . ')';
+	echo '<table style="width:50%; ">';
+	echo '<th>Value</th><th>Local DB</th><th>Blockchain</th>';
 	for ($y = 0; $y < count($apptDetailedInfo); $y++) {
 		$detInfo = $apptDetailedInfo[$x][$y];
 		$bcInfo = $blockchainDetailedInfo[$x][$y];
@@ -112,7 +106,7 @@ for ($x = 0; $x < count($apptInfo); $x++) {
 		writeTableRow('Row Hash', $detInfo['HASH'],  $bcInfo['rowhash']);
 		echo '<tr><td>Hash Matches current?</td>';
 		if (getUserTrackingHash($patInfo, $apptDetailedInfo[$x][$y]) != $detInfo['HASH']) {
-			echo '<td bgcolor="red">NO</td><td></td></tr>';
+			echo '<td bgcolor="pink">NO</td><td></td></tr>';
 		} else {
 			echo '<td>NO</td><td></td></tr>';
 		}

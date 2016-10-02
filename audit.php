@@ -34,6 +34,8 @@ function getPatients($db, $lname) {
 }
 
 ?>
+<h2>Audit Page</h2>
+<h4>Please type a patient last name, then select the correct patient<h4>
 <form method='POST'>
 	<input type="text" name="last">
 
