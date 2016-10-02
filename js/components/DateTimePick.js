@@ -35,9 +35,9 @@ const DateTimePick = React.createClass({
         const cbs   = {marginTop:10};
 
         if(this.props.rootState.appointment.time != '00:00' && this.props.rootState.appointment.time != 'waitlist'){
-            var btns = <Button style={cbs} bsStyle="primary">Create</Button>;
+            var btns = <Button style={cbs} bsStyle="primary" onClick={this.props.saveAppointment}>Create</Button>;
         } else if(this.props.rootState.appointment.time == 'waitlist'){
-            var btns = <Button bsStyle="danger" style={cbs}>Add to Waitlist</Button>;
+            var btns = <Button bsStyle="danger" style={cbs} onClick={this.props.saveWaitList}>Add to Waitlist</Button>;
         } else {
             var btns = <div></div>;
         }

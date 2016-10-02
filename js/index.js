@@ -7,13 +7,16 @@ import App from './components/App';
 import CreateAppt from './components/CreateAppt';
 import ListAppts from './components/ListAppts';
 import ApptSaved from './components/ApptSaved';
+import Waitlisted from './components/Waitlisted';
+import Login from './components/Login';
 
 const router = (
     <Router history={hashHistory}>
         <Route path="/" component={App}>
-            <IndexRoute component={CreateAppt}/>
-            <Route path="/appointment-list" component={ListAppts} />
+            <IndexRoute component={Login}/>
+            <Route path="/create-appointment" component={CreateAppt} />
             <Route path="/appointment-saved" component={ApptSaved} />
+            <Route path="/appointment-wait-listed" component={Waitlisted} />
         </Route>
     </Router>
 );

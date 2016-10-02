@@ -2,7 +2,7 @@ import React from 'react';
 import {Grid} from 'react-bootstrap';
 import moment from 'moment';
 import jQuery from 'jquery';
-
+import { IndexRoute, Router, Route, IndexRedirect, hashHistory } from 'react-router';
 
 const App = React.createClass({
     getInitialState: function() {
@@ -69,9 +69,12 @@ const App = React.createClass({
     },
     saveAppointment:function(){
         console.log("I'll go save the appointment now");
+            hashHistory.push('/appointment-saved');
         jQuery.post('api.php',{},function(data){
-
         });
+    },
+    saveWaitList:function(){
+        hashHistory.push('/appointment-wait-listed');
     },
     componentWillMount:function(){
         this.pull_departments();
@@ -85,7 +88,9 @@ const App = React.createClass({
                 update_patient_department:this.update_patient_department,
                 updatePatientDoc:this.updatePatientDoc,
                 updateApptDate:this.updateApptDate,
-                updateTime:this.updateTime
+                updateTime:this.updateTime,
+                saveWaitList:this.saveWaitList,
+                saveAppointment:this.saveAppointment
             })
         );
 
