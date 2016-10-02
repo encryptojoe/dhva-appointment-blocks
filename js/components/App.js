@@ -31,7 +31,7 @@ const App = React.createClass({
         this.setState(docs);
     },
     pull_departments:function(){
-        jQuery.post('api.php', {func:'pull_departments'}, function(data){
+        jQuery.post('api.php', {func:'get_department_type'}, function(data){
             this.setState({departments:data});
         }.bind(this));
     },
