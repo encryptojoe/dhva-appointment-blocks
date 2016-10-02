@@ -18,7 +18,7 @@ const App = React.createClass({
             patient:{
                 name:'',
                 family:'',
-                pid:Math.round(Math.random()*1000) + 1,
+                pid:Math.round(Math.random()*6) + 1,
             },
             appointment:{
                 department:-1,

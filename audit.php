@@ -49,21 +49,29 @@ function getPatient($db, $patId) {
 }
 
 
-function getBCApptInfo($id)
+
+function getAllFullRecs() 
 {
     $recs = getAllRecords();
     $recsjson = json_decode($recs, True);
     $recsjson = $recsjson['records'];
 
-    $out_arr = null; 
+    $out_arr = []; 
     foreach ($recsjson as $rec) {
         $url = 'https://api.tierion.com/v1/records/' . $rec['id'];
         $recordresponse = doCurl($url);
 
         $res = json_decode($recordresponse, True);
         $res = $res['data'];
-    
+        $out_arr[] = $res;
+    }
+    return $out_arr;
+}
 
+function getBCApptInfo($id, $allrecs)
+{
+    $out_arr = null; 
+    foreach ($allrecs as $res) {
         if (array_key_exists('version', $res) && $res['version'] == '0.1') {
                 if ($res['appointment'] == $id) {
 			$out_arr = $res;
@@ -71,14 +79,19 @@ function getBCApptInfo($id)
                 }
         }
     }
+
     return $out_arr;
 }
 
+$allrecs = getAllFullRecs();
+
 $apptInfos = getApptInfo($db);
-foreach ($apptInfos as $apptInfo) {
+foreach ($apptInfos as &$apptInfo) {
+    if ($apptInfo['ID'] == 1) {
+        continue;
+    }
 	$pat = getPatient($db, $apptInfo['PATIENT_ID']);
-	$apptInfo['NAME'] = $pat['FAMILY'] . ' ' . $pat['NAME'];
-	$apptInfo['BC'] = getBCApptInfo($apptInfo);
+	$apptInfo['BC'] = getBCApptInfo($apptInfo['ID'], $allrecs);
 
 	$toHash = $apptInfo['PATIENT_ID'] . 'na'. $apptInfo['ID'] . $apptInfo['STAFF_ID'];
 	$apptInfo['CalcHash'] = getHash($toHash);
@@ -102,24 +115,35 @@ function writeTableRow($rowName, $mySQLVal, $bcVal)
 }
 
 #############################
-echo "<h2>Audit Results</h2>";
-foreach ($apptInfos as $apptInfo) {
-	echo '<h3>Appointment for: ' . $apptInfo['NAME'] . ' on ' . $apptInfo['L_TS'] . '</h3>';
-	echo "<table style='width:50%'>";
+echo "<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='UTF-8'>
+<title>VA Audit</title>
+</head>
+<body>
+    <div class='container'>
+<h2>Audit Results</h2>";
+foreach ($apptInfos as $appt) {
+    if ($appt['ID'] == 1) {
+        continue;
+    }
+    echo '<h3>Appointment for: USER' . $appt['PATIENT_ID'] . ' on ' . $appt['DATE_FROM'] . '</h3>';
+    echo "<table style='width:50%'>";
 
-	echo '<th>Value</th><th>Local DB</th><th>Blockchain</th>';
-		
-	writeTableRow('Timestamp', $apptInfo['L_TS'], $apptInfo['BC']['timestamp']);
-	writeTableRow('Attending ID', $apptInfo['STAFF_ID'],  $apptInfo['BC']['attending']);
-	writeTableRow('Row Hash', $apptInfo['HASH'],  $apptInfo['BC']['rowhash']);
-	echo '<tr><td>Hash Matches Data?</td>';
-	if ($apptInfo['HashMatch']) {
-		echo "<td>YES</td><td></td></tr>";
-	} else {
-		echo "<td bgcolor='pink'>NO, data changed</td><td></td></tr>";
-	}
-	echo '</table>';
-	echo '<br />';
+    echo '<th>Value</th><th>Local DB</th><th>Blockchain</th>';
+        
+    writeTableRow('Timestamp', $appt['DATE_FROM'], $appt['BC']['timestamp']);
+    writeTableRow('Attending ID', $appt['STAFF_ID'],  $appt['BC']['attending']);
+    writeTableRow('Row Hash', $appt['HASH'],  $appt['BC']['rowhash']);
+    echo '<tr><td>Hash Matches Data?</td>';
+    if ($appt['HashMatch']) {
+        echo "<td>YES</td><td></td></tr>";
+    } else {
+        echo "<td bgcolor='pink'>NO, data changed</td><td></td></tr>";
+    }
+    echo '</table>';
+    echo '<br /></div></body></html>';
 }
 
 ?>
