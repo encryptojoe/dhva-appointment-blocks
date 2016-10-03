@@ -122,14 +122,16 @@ echo "<!DOCTYPE html>
 <title>VA Audit</title>
 </head>
 <body>
-    <div class='container'>
-<h2>Audit Results</h2>";
+    <div class='container-fluid'>
+    <div class='row'>
+        <div class='col-sm-12'>
+            <h2>Audit Results</h2>";
 foreach ($apptInfos as $appt) {
     if ($appt['ID'] == 1) {
         continue;
     }
     echo '<h3>Appointment for: USER' . $appt['PATIENT_ID'] . ' on ' . $appt['DATE_FROM'] . '</h3>';
-    echo "<table style='width:50%'>";
+    echo "<table class='table table-striped table-condensed'>";
 
     echo '<th>Value</th><th>Local DB</th><th>Blockchain</th>';
         
@@ -140,10 +142,11 @@ foreach ($apptInfos as $appt) {
     if ($appt['HashMatch']) {
         echo "<td>YES</td><td></td></tr>";
     } else {
-        echo "<td bgcolor='pink'>NO, data changed</td><td></td></tr>";
+        echo "<td class='bg-danger'>NO, data changed</td><td></td></tr>";
     }
     echo '</table>';
-    echo '<br /></div></body></html>';
+    echo '<br /></div></div></div><!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"></body></html>';
 }
 
 ?>
